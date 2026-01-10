@@ -169,7 +169,7 @@ export default function QuienesSomosPage() {
                   </svg>
                 </div>
                 <h4 className="font-display font-bold text-lg text-neutral-dark mb-2">Carlos &quot;Kylian&quot; Francés</h4>
-                <p className="text-neutral-muted text-sm">Talento y magia radiofónica</p>
+                <p className="text-neutral-muted text-sm">Frescura, energía y pasión granota</p>
               </div>
 
               {/* Placeholder para más miembros */}
