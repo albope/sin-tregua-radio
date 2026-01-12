@@ -67,6 +67,10 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${barlow.variable} ${playfair.variable}`}
     >
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      </head>
       <body className="font-body antialiased bg-neutral-cream text-neutral-dark">
         {children}
       </body>
