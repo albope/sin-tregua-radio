@@ -7,39 +7,54 @@ import { PatreonStats, PatreonBootstrapData } from "@/lib/types/patreon";
  */
 export function extractPatreonStats(html: string): PatreonStats | null {
   try {
-    // Patreon usa Next.js y los datos están en __NEXT_DATA__
-    // Buscar el script tag con id="__NEXT_DATA__"
+    // Estrategia 1: Buscar en __NEXT_DATA__ (estructura de Next.js de Patreon)
     const scriptRegex = /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/;
     const scriptMatch = html.match(scriptRegex);
 
-    if (!scriptMatch || !scriptMatch[1]) {
-      console.error("[Patreon] No se encontró __NEXT_DATA__ en el HTML");
-      return null;
+    if (scriptMatch && scriptMatch[1]) {
+      const nextData = JSON.parse(scriptMatch[1]);
+
+      // Ruta correcta: props.pageProps.bootstrapEnvelope.pageBootstrap.campaign
+      const campaign = nextData?.props?.pageProps?.bootstrapEnvelope?.pageBootstrap?.campaign;
+
+      if (campaign) {
+        const totalMembers = campaign?.data?.attributes?.patron_count;
+        const paidMembers = campaign?.data?.attributes?.paid_member_count;
+
+        if (validatePatreonStats({ totalMembers, paidMembers })) {
+          console.log("[Patreon] Datos extraídos exitosamente de __NEXT_DATA__");
+          return {
+            totalMembers,
+            paidMembers,
+            lastUpdated: new Date().toISOString(),
+          };
+        }
+      }
     }
 
-    const nextData = JSON.parse(scriptMatch[1]);
+    // Estrategia 2: Buscar patron_count y paid_member_count en el HTML con regex
+    // Esto es un fallback si la estructura de Next.js cambia
+    console.warn("[Patreon] Intentando estrategia de fallback con regex...");
 
-    // Los datos están en props.pageProps.bootstrapEnvelope.bootstrap.campaign
-    const campaign = nextData?.props?.pageProps?.bootstrapEnvelope?.bootstrap?.campaign;
+    const patronCountMatch = html.match(/"patron_count"\s*:\s*(\d+)/);
+    const paidMemberCountMatch = html.match(/"paid_member_count"\s*:\s*(\d+)/);
 
-    if (!campaign) {
-      console.error("[Patreon] No se encontró campaign en __NEXT_DATA__");
-      return null;
+    if (patronCountMatch && paidMemberCountMatch) {
+      const totalMembers = parseInt(patronCountMatch[1], 10);
+      const paidMembers = parseInt(paidMemberCountMatch[1], 10);
+
+      if (validatePatreonStats({ totalMembers, paidMembers })) {
+        console.log("[Patreon] Datos extraídos con estrategia de fallback");
+        return {
+          totalMembers,
+          paidMembers,
+          lastUpdated: new Date().toISOString(),
+        };
+      }
     }
 
-    const totalMembers = campaign?.data?.attributes?.patron_count;
-    const paidMembers = campaign?.data?.attributes?.paid_member_count;
-
-    if (!validatePatreonStats({ totalMembers, paidMembers })) {
-      console.error("[Patreon] Datos inválidos:", { totalMembers, paidMembers });
-      return null;
-    }
-
-    return {
-      totalMembers,
-      paidMembers,
-      lastUpdated: new Date().toISOString(),
-    };
+    console.error("[Patreon] No se pudieron extraer datos con ninguna estrategia");
+    return null;
   } catch (error) {
     console.error("[Patreon] Error al parsear datos:", error);
     return null;
