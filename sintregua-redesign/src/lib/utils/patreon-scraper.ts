@@ -7,20 +7,28 @@ import { PatreonStats, PatreonBootstrapData } from "@/lib/types/patreon";
  */
 export function extractPatreonStats(html: string): PatreonStats | null {
   try {
-    // Buscar el JSON embebido en window.patreon.bootstrap
-    // Usar [\s\S] en lugar de flag 's' para compatibilidad
-    const regex = /window\.patreon\.bootstrap\s*=\s*({[\s\S]*?});/;
-    const match = html.match(regex);
+    // Patreon usa Next.js y los datos están en __NEXT_DATA__
+    // Buscar el script tag con id="__NEXT_DATA__"
+    const scriptRegex = /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/;
+    const scriptMatch = html.match(scriptRegex);
 
-    if (!match || !match[1]) {
-      console.error("[Patreon] No se encontró window.patreon.bootstrap en el HTML");
+    if (!scriptMatch || !scriptMatch[1]) {
+      console.error("[Patreon] No se encontró __NEXT_DATA__ en el HTML");
       return null;
     }
 
-    const bootstrapData: PatreonBootstrapData = JSON.parse(match[1]);
+    const nextData = JSON.parse(scriptMatch[1]);
 
-    const totalMembers = bootstrapData?.campaign?.data?.attributes?.patron_count;
-    const paidMembers = bootstrapData?.campaign?.data?.attributes?.paid_member_count;
+    // Los datos están en props.pageProps.bootstrapEnvelope.bootstrap.campaign
+    const campaign = nextData?.props?.pageProps?.bootstrapEnvelope?.bootstrap?.campaign;
+
+    if (!campaign) {
+      console.error("[Patreon] No se encontró campaign en __NEXT_DATA__");
+      return null;
+    }
+
+    const totalMembers = campaign?.data?.attributes?.patron_count;
+    const paidMembers = campaign?.data?.attributes?.paid_member_count;
 
     if (!validatePatreonStats({ totalMembers, paidMembers })) {
       console.error("[Patreon] Datos inválidos:", { totalMembers, paidMembers });
