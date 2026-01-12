@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import Footer from "@/components/Footer";
 import RadioPlayer from "@/components/RadioPlayer";
+import PatreonStatsCard from "@/components/PatreonStatsCard";
 import Image from "next/image";
 import Link from "next/link";
 import { IMAGES, SOCIAL_LINKS, GALLERY_IMAGES } from "@/lib/constants";
@@ -14,6 +15,9 @@ export default function HomePage() {
 
       {/* Hero Section con mensaje de bienvenida */}
       <HeroSection />
+
+      {/* Sección Estadísticas de Patreon */}
+      <PatreonStatsCard />
 
       {/* Sección Radio Player */}
       <RadioSection />

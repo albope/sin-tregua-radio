@@ -31,6 +31,13 @@ export const SOCIAL_LINKS = {
   radioStreamDirect: "https://stream.zeno.fm/4t2071y0w7zuv", // Stream directo para embed
 };
 
+// Configuración de Patreon
+export const PATREON_CONFIG = {
+  publicUrl: "https://www.patreon.com/c/sintregua/about",
+  cacheTTL: 10 * 60 * 1000, // 10 minutos
+  fetchTimeout: 10000, // 10 segundos
+};
+
 // Imágenes del sitio real
 export const IMAGES = {
   logo: `${UPLOADS_URL}/2025/09/ST_radio_color282f68.png`,
