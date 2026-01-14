@@ -13,19 +13,22 @@ export default function HeroSection() {
 
   return (
     <section className="group relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Carousel con overlay */}
+      {/* Background - Móvil: Gradiente / Desktop: Carrusel */}
       <div className="absolute inset-0">
-        {/* Placeholder gradient mientras carga */}
-        <div className="absolute inset-0 bg-gradient-to-br from-levante-azul via-levante-azul-deep to-levante-granate" />
+        {/* Fondo móvil - Solo gradiente */}
+        <div className="md:hidden absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-levante-azul via-levante-azul-deep to-levante-granate" />
+          <div className="absolute inset-0 bg-granota-pattern opacity-30" />
+          <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.4)]" />
+        </div>
 
-        {/* Carrusel de imágenes del equipo */}
-        <HeroCarousel className="opacity-60" />
-
-        {/* Textura sutil de granota */}
-        <div className="absolute inset-0 bg-granota-pattern opacity-30 pointer-events-none" />
-
-        {/* Efecto de viñeta */}
-        <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.5)] pointer-events-none" />
+        {/* Fondo desktop - Carrusel de imágenes del equipo */}
+        <div className="hidden md:block absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-levante-azul via-levante-azul-deep to-levante-granate" />
+          <HeroCarousel className="opacity-60" />
+          <div className="absolute inset-0 bg-granota-pattern opacity-30 pointer-events-none" />
+          <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.5)] pointer-events-none" />
+        </div>
       </div>
 
       {/* Línea dorada decorativa */}
