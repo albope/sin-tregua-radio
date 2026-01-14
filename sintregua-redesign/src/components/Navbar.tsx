@@ -21,7 +21,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out-expo ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-card py-3"
+          ? "bg-levante-azul-deep/95 backdrop-blur-md shadow-card py-3"
           : "bg-transparent py-5"
       }`}
     >
@@ -32,14 +32,14 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               <span className={`font-display font-black text-2xl tracking-tight transition-all duration-300 ${
                 scrolled
-                  ? "text-[#0A2540]"
+                  ? "text-white"
                   : "text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
               }`}>
                 Sin Tregua
               </span>
               <span className={`font-display font-black text-2xl tracking-tight transition-all duration-300 ${
                 scrolled
-                  ? "text-[#635BFF]"
+                  ? "text-white"
                   : "text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
               }`}>
                 Radio
@@ -55,7 +55,7 @@ export default function Navbar() {
                 href={link.href}
                 className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 group ${
                   scrolled
-                    ? "text-neutral-dark hover:text-levante-azul"
+                    ? "text-white hover:text-levante-dorado"
                     : "text-white/90 hover:text-white"
                 }`}
               >
@@ -63,7 +63,7 @@ export default function Navbar() {
                 {/* Underline animado */}
                 <span
                   className={`absolute bottom-0 left-4 right-4 h-0.5 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${
-                    scrolled ? "bg-levante-granate" : "bg-levante-dorado"
+                    scrolled ? "bg-levante-dorado" : "bg-levante-dorado"
                   }`}
                 />
               </Link>
@@ -75,7 +75,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 group ${
                 scrolled
-                  ? "text-levante-dorado hover:text-levante-dorado-dark"
+                  ? "text-white hover:text-levante-dorado"
                   : "text-levante-dorado-light hover:text-levante-dorado"
               }`}
             >
@@ -96,7 +96,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className={`p-2 rounded-full transition-all duration-300 ${
                   scrolled
-                    ? "hover:bg-neutral-light text-neutral-dark"
+                    ? "hover:bg-white/20 text-white"
                     : "hover:bg-white/10 text-white"
                 }`}
                 aria-label="X (Twitter)"
@@ -111,7 +111,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className={`p-2 rounded-full transition-all duration-300 ${
                   scrolled
-                    ? "hover:bg-neutral-light text-neutral-dark"
+                    ? "hover:bg-white/20 text-white"
                     : "hover:bg-white/10 text-white"
                 }`}
                 aria-label="TikTok"
@@ -124,9 +124,11 @@ export default function Navbar() {
 
             {/* Live Badge - Radio en directo */}
             <a
-              href={SOCIAL_LINKS.radioStream}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#radio-player"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('radio-player')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
               className="flex items-center gap-2 px-4 py-2 bg-levante-granate text-white text-sm font-semibold rounded-full hover:bg-levante-granate-deep transition-all duration-300 hover:shadow-glow-granate"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -142,7 +144,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`lg:hidden p-2 rounded-lg transition-colors ${
               scrolled
-                ? "text-neutral-dark hover:bg-neutral-light"
+                ? "text-white hover:bg-white/20"
                 : "text-white hover:bg-white/10"
             }`}
             aria-label="Menu"
@@ -180,7 +182,7 @@ export default function Navbar() {
         >
           <div
             className={`rounded-2xl p-4 ${
-              scrolled ? "bg-neutral-light" : "bg-white/10 backdrop-blur-md"
+              scrolled ? "bg-levante-azul-deep/90" : "bg-levante-azul-deep/95 backdrop-blur-lg"
             }`}
           >
             {NAV_LINKS.map((link, index) => (
@@ -188,11 +190,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 ${
-                  scrolled
-                    ? "text-neutral-dark hover:bg-white hover:text-levante-azul"
-                    : "text-white hover:bg-white/10"
-                }`}
+                className="block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {link.label}
@@ -204,24 +202,18 @@ export default function Navbar() {
               href={SOCIAL_LINKS.patreon}
               target="_blank"
               rel="noopener noreferrer"
-              className={`block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 ${
-                scrolled
-                  ? "text-levante-dorado hover:bg-white"
-                  : "text-levante-dorado-light hover:bg-white/10"
-              }`}
+              className="block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20"
             >
               ⭐ Apóyanos en Patreon
             </a>
 
             {/* Social links móvil */}
-            <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-white/10">
+            <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-white/20">
               <a
                 href={SOCIAL_LINKS.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-3 rounded-full ${
-                  scrolled ? "bg-white text-neutral-dark" : "bg-white/10 text-white"
-                }`}
+                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -231,9 +223,7 @@ export default function Navbar() {
                 href={SOCIAL_LINKS.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-3 rounded-full ${
-                  scrolled ? "bg-white text-neutral-dark" : "bg-white/10 text-white"
-                }`}
+                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
@@ -243,9 +233,14 @@ export default function Navbar() {
 
             <div className="mt-4">
               <a
-                href={SOCIAL_LINKS.radioStream}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#radio-player"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  setTimeout(() => {
+                    document.getElementById('radio-player')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 300);
+                }}
                 className="flex items-center justify-center gap-2 py-3 bg-levante-granate text-white font-semibold rounded-xl hover:bg-levante-granate-deep transition-colors"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

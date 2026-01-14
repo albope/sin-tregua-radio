@@ -60,9 +60,11 @@ export default function HeroSection() {
         >
           {/* Escuchar en directo - CTA principal */}
           <a
-            href={SOCIAL_LINKS.radioStream}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#radio-player"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('radio-player')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
             className="group inline-flex items-center gap-3 px-8 py-4 bg-levante-granate text-white font-display font-bold text-lg rounded-full hover:bg-levante-granate-deep transition-all duration-300 hover:shadow-glow-granate"
           >
             <span className="relative flex h-3 w-3">
