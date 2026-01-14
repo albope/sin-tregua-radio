@@ -74,7 +74,7 @@ export default function QuienesSomosPage() {
               </div>
               <h2 className="font-display font-bold text-2xl text-neutral-dark">Nuestra Historia</h2>
             </div>
-            <p className="text-lg text-neutral-muted leading-relaxed pl-16">
+            <p className="text-lg text-neutral-muted leading-relaxed pl-16 text-justify">
               {ABOUT_TEXT.history}
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function QuienesSomosPage() {
               </div>
               <h2 className="font-display font-bold text-2xl text-neutral-dark">El Equipo</h2>
             </div>
-            <p className="text-lg text-neutral-muted leading-relaxed pl-16">
+            <p className="text-lg text-neutral-muted leading-relaxed pl-16 text-justify">
               {ABOUT_TEXT.team}
             </p>
           </div>

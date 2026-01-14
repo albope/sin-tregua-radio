@@ -26,7 +26,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sintregua.es'),
-  title: "Sin Tregua Radio | Noticias del Levante UD",
+  title: "Sin Tregua Radio | Est.2006",
   description:
     "Vive con nosotros la pasión, las aventuras y desventuras del decano del fútbol valenciano: el Levante UD. Noticias, análisis, podcast y radio en directo.",
   keywords: [
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   applicationName: "Sin Tregua Radio",
 
   openGraph: {
-    title: "Sin Tregua Radio | Noticias del Levante UD",
+    title: "Sin Tregua Radio | Est.2006",
     description:
       "Vive con nosotros la pasión del Levante UD. Noticias, análisis y radio en directo.",
     url: "https://sintregua.es",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Sin Tregua Radio | Noticias del Levante UD",
+    title: "Sin Tregua Radio | Est.2006",
     description:
       "Vive con nosotros la pasión del Levante UD. Noticias, análisis y radio en directo.",
     site: "@SinTreguaRadio",
