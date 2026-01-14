@@ -3,13 +3,17 @@ import HeroSection from "@/components/HeroSection";
 import Footer from "@/components/Footer";
 import PatreonStatsCard from "@/components/PatreonStatsCard";
 import RadioSection from "@/components/RadioSection";
+import HashScrollHandler from "@/components/HashScrollHandler";
 import Image from "next/image";
 import Link from "next/link";
-import { IMAGES, SOCIAL_LINKS, GALLERY_IMAGES } from "@/lib/constants";
+import { SOCIAL_LINKS, GALLERY_IMAGES } from "@/lib/constants";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen">
+      {/* Handler para scroll al hash #radio-player */}
+      <HashScrollHandler />
+
       {/* Navbar sticky transparente */}
       <Navbar />
 
@@ -206,22 +210,6 @@ function GalleryPreview() {
               </div>
             </Link>
           ))}
-        </div>
-
-        {/* Banner de galería */}
-        <div className="mt-12">
-          <Link href="/galeria" className="block">
-            <div className="relative rounded-2xl overflow-hidden group">
-              <Image
-                src={IMAGES.bannerGaleria}
-                alt="Banner Galería Sin Tregua"
-                width={866}
-                height={250}
-                className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.02]"
-              />
-              <div className="absolute inset-0 bg-levante-azul/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          </Link>
         </div>
       </div>
     </section>

@@ -156,7 +156,7 @@ export default function PrivacidadPage() {
                 En cualquier momento puede dirigirse a nosotros para saber qué información tenemos sobre usted, rectificarla si fuese incorrecta y eliminarla una vez finalizada nuestra relación, en el caso de que ello sea legalmente posible.
               </p>
               <p className="text-neutral-muted leading-relaxed mt-4">
-                También tiene derecho a solicitar el traspaso de su información a otra entidad. Este derecho se llama "portabilidad" y puede ser útil en determinadas situaciones.
+                También tiene derecho a solicitar el traspaso de su información a otra entidad. Este derecho se llama &ldquo;portabilidad&rdquo; y puede ser útil en determinadas situaciones.
               </p>
               <p className="text-neutral-muted leading-relaxed mt-4">
                 Para solicitar alguno de estos derechos, deberá realizar una solicitud escrita a nuestra dirección, junto con una fotocopia de su DNI, para poder identificarle.

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { GALLERY_IMAGES, IMAGES } from "@/lib/constants";
+import { GALLERY_IMAGES } from "@/lib/constants";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -113,20 +113,6 @@ export default function GaleriaPage() {
           </div>
         </div>
       </section>
-
-      {/* Banner */}
-      <div className="relative -mt-10 mb-12 max-w-5xl mx-auto px-6">
-        <div className="relative rounded-2xl overflow-hidden shadow-elevated">
-          <Image
-            src={IMAGES.bannerGaleria}
-            alt="Banner Galería Sin Tregua"
-            width={866}
-            height={250}
-            className="w-full h-auto"
-            priority
-          />
-        </div>
-      </div>
 
       {/* Paginación superior */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-8">

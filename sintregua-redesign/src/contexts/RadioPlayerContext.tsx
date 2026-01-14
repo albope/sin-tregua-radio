@@ -12,6 +12,7 @@ interface RadioPlayerContextType {
   setVolume: (volume: number) => void;
   setAudioDelay: (delay: number) => void;
   audioRef: React.RefObject<HTMLAudioElement>;
+  analyserRef: React.RefObject<AnalyserNode | null>;
 }
 
 const RadioPlayerContext = createContext<RadioPlayerContextType | undefined>(undefined);
@@ -20,8 +21,11 @@ export const AUDIO_DELAY_OPTIONS = [
   { label: "Sin retardo", value: 0 },
   { label: "0.5 segundos", value: 0.5 },
   { label: "1 segundo", value: 1 },
+  { label: "1.5 segundos", value: 1.5 },
   { label: "2 segundos", value: 2 },
+  { label: "2.5 segundos", value: 2.5 },
   { label: "3 segundos", value: 3 },
+  { label: "3.5 segundos", value: 3.5 },
   { label: "5 segundos", value: 5 },
 ];
 
@@ -38,6 +42,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const delayNodeRef = useRef<DelayNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
 
   // Cargar preferencias del localStorage al montar
   useEffect(() => {
@@ -54,7 +59,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Inicializar Web Audio API
+  // Inicializar Web Audio API (solo una vez al montar)
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!audioRef.current || audioContextRef.current) return;
@@ -68,19 +73,24 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
       delayNodeRef.current = audioContextRef.current.createDelay(10); // Máximo 10 segundos
       gainNodeRef.current = audioContextRef.current.createGain();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 64; // 32 barras de frecuencia
+      analyserRef.current.smoothingTimeConstant = 0.8;
 
-      // Conectar: source -> delay -> gain -> destination
+      // Conectar: source -> delay -> analyser -> gain -> destination
       sourceNodeRef.current.connect(delayNodeRef.current);
-      delayNodeRef.current.connect(gainNodeRef.current);
+      delayNodeRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(gainNodeRef.current);
       gainNodeRef.current.connect(audioContextRef.current.destination);
 
-      // Configurar valores iniciales
+      // Configurar valores iniciales (los efectos de sincronización se encargan de actualizarlos)
       gainNodeRef.current.gain.value = volume;
       delayNodeRef.current.delayTime.value = audioDelay;
     } catch (error) {
       console.error("Error inicializando Web Audio API:", error);
       // Fallback: usar audio element directamente
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sincronizar volumen
@@ -149,6 +159,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         setVolume,
         setAudioDelay,
         audioRef,
+        analyserRef,
       }}
     >
       {children}
