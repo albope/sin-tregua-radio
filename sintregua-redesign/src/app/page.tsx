@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import Footer from "@/components/Footer";
-import RadioPlayer from "@/components/RadioPlayer";
 import PatreonStatsCard from "@/components/PatreonStatsCard";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,9 +18,6 @@ export default function HomePage() {
       {/* Sección Estadísticas de Patreon */}
       <PatreonStatsCard />
 
-      {/* Sección Radio Player */}
-      <RadioSection />
-
       {/* Sección Acerca de */}
       <AboutSection />
 
@@ -30,34 +26,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Floating Radio Player */}
-      <RadioPlayer variant="floating" />
     </main>
-  );
-}
-
-// Sección de Radio
-function RadioSection() {
-  return (
-    <section className="py-16 lg:py-20 bg-white relative overflow-hidden">
-      {/* Decoraciones */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-levante-azul/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-levante-granate/5 rounded-full blur-3xl translate-y-1/2 translate-x-1/2" />
-
-      <div className="relative max-w-4xl mx-auto px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <span className="inline-block px-4 py-2 bg-levante-granate/10 text-levante-granate text-xs font-bold uppercase tracking-wider rounded-full mb-4">
-            Escúchanos
-          </span>
-          <h2 className="font-display font-black text-headline text-neutral-dark">
-            Radio en <span className="text-levante-granate">directo</span>
-          </h2>
-        </div>
-
-        <RadioPlayer variant="full" />
-      </div>
-    </section>
   );
 }
 

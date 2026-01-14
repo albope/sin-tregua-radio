@@ -1,0 +1,56 @@
+
+> sintregua-redesign@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+> [PWA] Compile server
+> [PWA] Compile server
+> [PWA] Compile client (static)
+> [PWA] Auto register service worker with: C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next-pwa\register.js
+> [PWA] Service worker: C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\public\sw.js
+> [PWA]   url: /sw.js
+> [PWA]   scope: /
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/10) ...
+[Patreon] Error inesperado en API route: B [Error]: Dynamic server usage: Route /api/patreon-stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:21778)
+    at Object.get (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:29465)
+    at c (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\.next\server\app\api\patreon-stats\route.js:1:3093)
+    at C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:38417
+    at C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan (C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854)
+    at C:\Users\alber\Desktop\Projects\Sin_Tregua\sin-tregua-radio\sintregua-redesign\node_modules\next\dist\server\lib\trace\tracer.js:122:103 {
+  description: "Route /api/patreon-stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (2/10) 
+   Generating static pages (4/10) 
+   Generating static pages (7/10) 
+ ✓ Generating static pages (10/10)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    3.69 kB         109 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/patreon-stats                   0 B                0 B
+├ ○ /galeria                             2.88 kB         109 kB
+├ ○ /offline                             2.36 kB         104 kB
+├ ○ /privacidad                          183 B           101 kB
+└ ○ /quienes-somos                       3 kB            109 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-b93b2d5c59297f67.js       31.7 kB
+  ├ chunks/fd9d1056-dcba7f094ce3d609.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
