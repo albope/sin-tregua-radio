@@ -130,6 +130,7 @@ export const FOOTER_LINKS = {
     { label: "Inicio", href: "/" },
     { label: "Quiénes Somos", href: "/quienes-somos" },
     { label: "Galería de fotos", href: "/galeria" },
+    { label: "📱 Instalar App", href: "/instalar-app" },
   ],
   legal: [
     { label: "Política de privacidad", href: "/privacidad" },
