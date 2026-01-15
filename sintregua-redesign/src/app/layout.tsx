@@ -3,6 +3,8 @@ import { Inter, Barlow, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { RadioPlayerProvider } from "@/contexts/RadioPlayerContext";
 import RadioPlayer from "@/components/RadioPlayer";
+import PWAInstallBanner from "@/components/PWAInstallBanner";
+import InstallAppToast from "@/components/InstallAppToast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -123,6 +125,8 @@ export default function RootLayout({
         <RadioPlayerProvider>
           {children}
           <RadioPlayer />
+          <PWAInstallBanner />
+          <InstallAppToast />
         </RadioPlayerProvider>
       </body>
     </html>

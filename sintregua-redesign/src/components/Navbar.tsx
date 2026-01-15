@@ -248,6 +248,21 @@ export default function Navbar() {
               ⭐ Apóyanos en Patreon
             </a>
 
+            {/* Instalar App en móvil */}
+            <Link
+              href="/instalar-app"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20 bg-levante-azul/20 mt-2"
+            >
+              <span className="flex items-center gap-2">
+                <span>📱</span>
+                Instalar App
+              </span>
+              <span className="text-xs px-2 py-0.5 bg-levante-dorado text-neutral-dark rounded-full font-bold">
+                NUEVO
+              </span>
+            </Link>
+
             {/* Social links móvil */}
             <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-white/20">
               <a
