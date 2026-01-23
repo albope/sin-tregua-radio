@@ -334,7 +334,7 @@ export default function RadioSection() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
                               </svg>
                             </div>
-                            <span className="text-white/40 text-[10px]">5s</span>
+                            <span className="text-white/40 text-[10px]">0,5s</span>
                           </button>
                         </div>
                       </div>

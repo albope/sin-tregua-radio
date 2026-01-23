@@ -107,7 +107,6 @@ export const GALLERY_IMAGES = [
   { src: `/images/galeria/Historica_41.jpg`, alt: "Foto histórica 41" },
   { src: `/images/galeria/Historica_42.jpg`, alt: "Foto histórica 42" },
   { src: `/images/galeria/Historica_43.jpg`, alt: "Foto histórica 43" },
-  { src: `/images/galeria/Historica_44.jpg`, alt: "Foto histórica 44" },
   { src: `/images/galeria/Historica_45.jpg`, alt: "Foto histórica 45" },
   { src: `/images/galeria/Historica_46.jpg`, alt: "Foto histórica 46" },
   { src: `/images/galeria/Historica_47.jpg`, alt: "Foto histórica 47" },
