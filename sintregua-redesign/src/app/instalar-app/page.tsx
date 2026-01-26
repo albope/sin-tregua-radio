@@ -68,12 +68,12 @@ function HeroSection() {
               <p className="text-white text-sm font-semibold">Carga rápida</p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
-              <div className="text-3xl mb-3">🔔</div>
-              <p className="text-white text-sm font-semibold">Notificaciones<br />(próximamente)</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
               <div className="text-3xl mb-3">✈️</div>
               <p className="text-white text-sm font-semibold">Funciona offline</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <div className="text-3xl mb-3">🔄</div>
+              <p className="text-white text-sm font-semibold">Siempre actualizada</p>
             </div>
           </div>
         </div>

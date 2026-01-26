@@ -123,7 +123,7 @@ export default function RadioSection() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setVolume(volume === 0 ? 0.8 : 0)}
-                  className="text-white/60 hover:text-white transition-colors"
+                  className="text-white/60 hover:text-white transition-colors shrink-0"
                   aria-label={volume === 0 ? "Activar sonido" : "Silenciar"}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -135,8 +135,15 @@ export default function RadioSection() {
                   </svg>
                 </button>
 
-                {/* Slider de volumen */}
-                <div className="flex-1 max-w-xs">
+                {/* Slider de volumen con barra de progreso visual */}
+                <div className="flex-1 min-w-[100px] max-w-xs relative">
+                  {/* Barra de fondo */}
+                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-2 bg-white/20 rounded-full" />
+                  {/* Barra de progreso */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 left-0 h-2 bg-levante-dorado rounded-full transition-all"
+                    style={{ width: `${volume * 100}%` }}
+                  />
                   <input
                     type="range"
                     min="0"
@@ -145,11 +152,11 @@ export default function RadioSection() {
                     value={volume}
                     onChange={handleVolumeChange}
                     aria-label="Control de volumen"
-                    className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-levante-dorado [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-levante-dorado [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                    className="relative w-full h-6 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-levante-dorado [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-levante-dorado/50 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-levante-dorado [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:shadow-lg"
                   />
                 </div>
 
-                <span className="text-white text-sm font-medium w-12 text-right">
+                <span className="text-white text-sm font-medium w-10 text-right shrink-0">
                   {Math.round(volume * 100)}%
                 </span>
               </div>
