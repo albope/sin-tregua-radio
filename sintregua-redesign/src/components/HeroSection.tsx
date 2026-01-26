@@ -42,7 +42,7 @@ export default function HeroSection() {
             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          Bienvenido a la página web del programa con más sentimiento de la radiodifusión mundial.
+          Bienvenido a la página web del programa con más sentimiento de la radiodifusión mundial
         </h1>
 
         {/* Tagline */}

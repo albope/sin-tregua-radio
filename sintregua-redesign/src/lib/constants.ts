@@ -13,10 +13,64 @@ export const COMPANY_INFO = {
 
 // Texto de Quiénes Somos (exacto del sitio)
 export const ABOUT_TEXT = {
-  title: "Bienvenido a la página web del programa con más sentimiento de la radiodifusión mundial.",
-  history: "Nacido el 11 de septiembre de 2006 de la mano del periodista valenciano Carlos Ayats, SIN TREGUA lleva dos décadas soñando y sufriendo las aventuras y desventuras del equipo decano del fútbol valenciano.",
-  team: "Suscríbete a SIN TREGUA y disfruta, de lunes a jueves, de la mejor información del Levante UD con un equipo incomparable que completan el humor único e incomparable de Jorge 'El Maestro' Benavent, la sabiduría balompédica del mejor comentarista de España, Jose 'El Profe' Lacueva, y el talento y la magia radiofónica de Álvaro Haro y Carlos 'Kylian' Francés.",
+  title: "Bienvenido a la página web del programa con más sentimiento de la radiodifusión mundial",
+  history: `Nacido el 11 de septiembre de 2006 de la mano del periodista valenciano Carlos Ayats, SIN TREGUA lleva dos décadas disfrutando, sufriendo y soñando siempre al lado del decano del fútbol valenciano: el Levante UD.
+
+Inicialmente, el programa se emite en Radio Esport, pero en 2008, Ayats decide separar su camino de la emisora, patenta el programa e inicia un periplo que llevará a SIN TREGUA por diversas cadenas valencianas, destacando especialmente dos inolvidables etapas en La 97.7 (2009-2013 y 2018-2020).
+
+Con la desaparición de La 97.7, SIN TREGUA da el paso a las nuevas plataformas y pasa a ofrecer su programa diario, en formato podcast, a través de Patreon, creando además una emisora online gratuita para la retransmisión en abierto de los partidos del Levante UD.
+
+Durante todos estos años, han sido muchas las personas que han formado parte de SIN TREGUA. A todas ellas, mil gracias por ser parte de la familia, en especial, a nuestros queridos e inolvidables Jorge Almela, Pedro Valero, Sara Calvo y Luis Barrachina, partes fundamentales de la historia de este programa.`,
 };
+
+// Miembros del equipo con descripciones completas
+export const TEAM_MEMBERS = [
+  {
+    name: "Carlos Ayats Pérez",
+    nickname: null,
+    birthInfo: "València, 1979",
+    role: "Creador y Director",
+    description: "Creador y alma mater de un proyecto nacido con un único objetivo: darle al Levante UD el trato mediático que merece, con rigor, profesionalidad y pasión. Innovador y multitarea, cubre mediáticamente al decano valenciano desde 1999, y combina su proselitismo granota con su trabajo en la Universitat Politècnica de València desde 2006.",
+    icon: "microphone",
+    featured: true,
+  },
+  {
+    name: "Jorge Benavent Arnau",
+    nickname: null,
+    birthInfo: "València, 1979",
+    role: "Humor y creatividad",
+    description: "La magia de SIN TREGUA. Desde el primer día, sus imitaciones, su ingenio, su humor y su ironía son sello de un programa cuya historia no se entiende sin 'El Maestro'. Técnico de sonido, monologuista y experto en telecomunicaciones, sus legendarios hits musicales fueron tendencia en el autobús del primer equipo en la era preconcursal.",
+    icon: "smile",
+    featured: false,
+  },
+  {
+    name: "Jose Manuel Lacueva García",
+    nickname: null,
+    birthInfo: "València, 1981",
+    role: "Análisis táctico",
+    description: "El mejor comentarista de España. Pero de largo. Y lo tenemos nosotros. Didáctico, apasionado y riguroso, 'El Profe' es el punto zen de SIN TREGUA. Pasó de sentar cátedra en la escuela del Levante UD a hacerlo en nuestro programa en honor a su abuelo, uno de esos míticos granotas que sufría para informarse del equipo de su corazón y que hoy, sin duda, sacaría pecho orgulloso de su nieto.",
+    icon: "lightbulb",
+    featured: false,
+  },
+  {
+    name: "Álvaro Haro Ballesteros",
+    nickname: null,
+    birthInfo: "València, 2000",
+    role: "Periodismo",
+    description: "Presente y futuro del periodismo granota. De música, ni idea, pero en lo suyo, lidera con brillantez a una nueva generación de periodistas clave para el futuro. Talento, trabajo, personalidad y simpatía se combinan en él con maestría para darle a SIN TREGUA un vital toque de aire fresco sin perder su esencia. El Bad Bunny del siglo XXI mediático.",
+    icon: "star",
+    featured: false,
+  },
+  {
+    name: "Carlos Francés Mora",
+    nickname: null,
+    birthInfo: "València, 2002",
+    role: "Contenido digital",
+    description: "Actor, tenista, portero de élite juvenil y hoy, tiktóker de éxito, 'Kylian' es una eterna caja de sorpresas. Sin fin. Honesto, empático, profesional y enormemente versátil, es la solución a cualquier problema. Si la clase y la elegancia se midieran en centímetros, jugaría en la NBA. Su animal favorito, por lo que sea, es el jabalí.",
+    icon: "bolt",
+    featured: false,
+  },
+];
 
 // URLs base
 export const BASE_URL = "http://www.sintregua.es";
