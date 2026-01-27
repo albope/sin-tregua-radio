@@ -30,13 +30,38 @@ export default function RadioPlayer() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
 
-            {/* Badge EN VIVO */}
-            <div className="relative flex items-center justify-center w-12 h-12 bg-levante-granate rounded-full shadow-glow-granate shrink-0">
-              <span className={`absolute inline-flex h-full w-full rounded-full bg-levante-granate ${isPlaying ? 'animate-ping opacity-75' : 'opacity-0'}`} />
-              <div className="relative flex flex-col items-center justify-center leading-none">
-                <span className="text-[10px] font-bold text-white uppercase">En</span>
-                <span className="text-[10px] font-bold text-white uppercase">Vivo</span>
-              </div>
+            {/* Icono de Radio/Antena */}
+            <div className={`relative flex items-center justify-center w-12 h-12 rounded-full shrink-0 transition-colors duration-300 ${isPlaying ? 'bg-levante-granate shadow-glow-granate' : 'bg-neutral-dark border-2 border-white/20'}`}>
+              {/* Ondas animadas (solo cuando reproduce) */}
+              <span className={`absolute inline-flex h-full w-full rounded-full bg-levante-granate transition-opacity duration-300 ${isPlaying ? 'animate-ping opacity-50' : 'opacity-0'}`} />
+
+              {/* Icono de antena con ondas */}
+              <svg className="relative w-6 h-6" viewBox="0 0 24 24" fill="none">
+                {/* Punto central (antena) */}
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                  className={`transition-colors duration-300 ${isPlaying ? 'fill-white' : 'fill-white/50'}`}
+                />
+
+                {/* Onda interior */}
+                <path
+                  d="M8.11 15.89a5.99 5.99 0 0 1 0-7.78M15.89 8.11a5.99 5.99 0 0 1 0 7.78"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className={`transition-all duration-300 ${isPlaying ? 'stroke-white animate-pulse' : 'stroke-white/30'}`}
+                />
+
+                {/* Onda exterior */}
+                <path
+                  d="M5.64 18.36a9.97 9.97 0 0 1 0-12.72M18.36 5.64a9.97 9.97 0 0 1 0 12.72"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className={`transition-all duration-300 ${isPlaying ? 'stroke-white/80 animate-pulse' : 'stroke-white/20'}`}
+                  style={isPlaying ? { animationDelay: '0.15s' } : {}}
+                />
+              </svg>
             </div>
 
             {/* Botón Play/Pause */}
@@ -193,18 +218,19 @@ export default function RadioPlayer() {
               )}
             </div>
 
-            {/* Link externo */}
+            {/* Link a Zeno.fm */}
             <a
               href={SOCIAL_LINKS.radioStream}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-white/60 hover:text-levante-dorado transition-colors hidden sm:block"
+              className="relative group"
               title="Abrir en Zeno.fm"
               aria-label="Abrir radio en Zeno.fm"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+              <span className="absolute inset-0 rounded bg-levante-dorado/30 blur-md group-hover:bg-levante-dorado/50 transition-all duration-300" />
+              <span className="relative px-2.5 py-1 text-xs font-bold bg-neutral-dark border border-levante-dorado/60 text-levante-dorado rounded group-hover:border-levante-dorado group-hover:text-white group-hover:bg-levante-dorado/20 transition-all duration-300">
+                ZENO
+              </span>
             </a>
 
           </div>

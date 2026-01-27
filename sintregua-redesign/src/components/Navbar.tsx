@@ -231,7 +231,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20"
+                className="mobile-menu-link"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {link.label}
@@ -243,7 +243,7 @@ export default function Navbar() {
               href={SOCIAL_LINKS.patreon}
               target="_blank"
               rel="noopener noreferrer"
-              className="block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20"
+              className="mobile-menu-link"
             >
               ⭐ Apóyanos en Patreon
             </a>
@@ -252,7 +252,7 @@ export default function Navbar() {
             <Link
               href="/instalar-app"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white hover:bg-white/20 bg-levante-azul/20 mt-2"
+              className="mobile-menu-link flex items-center justify-between bg-levante-azul/20 mt-2"
             >
               <span className="flex items-center gap-2">
                 <span>📱</span>
@@ -269,7 +269,7 @@ export default function Navbar() {
                 href={SOCIAL_LINKS.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="mobile-social-icon"
                 aria-label="X (Twitter)"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -280,7 +280,7 @@ export default function Navbar() {
                 href={SOCIAL_LINKS.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="mobile-social-icon"
                 aria-label="TikTok"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -291,7 +291,7 @@ export default function Navbar() {
                 href={SOCIAL_LINKS.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="mobile-social-icon"
                 aria-label="Facebook"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

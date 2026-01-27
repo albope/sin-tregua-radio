@@ -44,6 +44,10 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-neutral-dark relative overflow-hidden">
       {/* Textura sutil */}
@@ -196,6 +200,17 @@ export default function Footer() {
           </p>
         </div>
       </div>
+
+      {/* Botón volver arriba - siempre visible en el footer */}
+      <button
+        onClick={scrollToTop}
+        aria-label="Volver arriba"
+        className="absolute top-8 right-6 w-12 h-12 rounded-full bg-white/5 border border-white/20 shadow-lg flex items-center justify-center text-white/70 hover:text-white hover:border-levante-dorado hover:bg-white/10 transition-all duration-300"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
     </footer>
   );
 }

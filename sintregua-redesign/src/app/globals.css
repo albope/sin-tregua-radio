@@ -67,6 +67,32 @@
     @apply relative z-10;
   }
 
+  /* Mobile menu link hover */
+  .mobile-menu-link {
+    @apply block py-3 px-4 text-base font-medium rounded-xl transition-all duration-300 text-white;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-menu-link:hover,
+  .mobile-menu-link:focus,
+  .mobile-menu-link:active {
+    background-color: #A50044 !important;
+    color: white !important;
+  }
+
+  /* Mobile social icon hover */
+  .mobile-social-icon {
+    @apply p-3 rounded-full bg-white/10 text-white transition-colors;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-social-icon:hover,
+  .mobile-social-icon:focus,
+  .mobile-social-icon:active {
+    background-color: #A50044 !important;
+    color: white !important;
+  }
+
   /* Animated underline for links */
   .link-underline {
     @apply relative;
