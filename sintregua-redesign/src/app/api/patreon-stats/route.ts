@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { extractPatreonStats } from "@/lib/utils/patreon-scraper";
 import { PatreonStats, PatreonApiResponse } from "@/lib/types/patreon";
 
+// Forzar ruta dinámica (usa request.url)
+export const dynamic = "force-dynamic";
+
 // Configuración
 const PATREON_URL = "https://www.patreon.com/c/sintregua/about";
 const CACHE_TTL = 10 * 60 * 1000; // 10 minutos

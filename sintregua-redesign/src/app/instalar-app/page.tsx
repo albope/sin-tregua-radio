@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
@@ -358,18 +358,33 @@ function FAQSection() {
   );
 }
 
-// Página principal
-export default function InstalarAppPage() {
+// Componente interno que usa useSearchParams
+function InstalarAppContent() {
   const searchParams = useSearchParams();
   const plataforma = searchParams.get("plataforma") as "android" | "ios" | null;
 
   return (
-    <main className="min-h-screen">
-      <Navbar />
+    <>
       <HeroSection />
       <TabsSection initialPlatform={plataforma || undefined} />
       <VerificationSection />
       <FAQSection />
+    </>
+  );
+}
+
+// Página principal con Suspense boundary
+export default function InstalarAppPage() {
+  return (
+    <main className="min-h-screen">
+      <Navbar />
+      <Suspense fallback={
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div className="animate-pulse text-neutral-muted">Cargando...</div>
+        </div>
+      }>
+        <InstalarAppContent />
+      </Suspense>
       <Footer />
     </main>
   );
