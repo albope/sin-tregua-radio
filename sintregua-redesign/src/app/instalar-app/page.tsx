@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -83,8 +84,15 @@ function HeroSection() {
 }
 
 // Tabs Section con instrucciones
-function TabsSection() {
-  const [activeTab, setActiveTab] = useState<"android" | "ios">("android");
+function TabsSection({ initialPlatform }: { initialPlatform?: "android" | "ios" }) {
+  const [activeTab, setActiveTab] = useState<"android" | "ios">(initialPlatform || "android");
+
+  // Actualizar si cambia la plataforma inicial
+  useEffect(() => {
+    if (initialPlatform) {
+      setActiveTab(initialPlatform);
+    }
+  }, [initialPlatform]);
 
   const androidSteps = [
     {
@@ -179,7 +187,7 @@ function TabsSection() {
   const steps = activeTab === "android" ? androidSteps : iosSteps;
 
   return (
-    <section className="py-20 lg:py-28 bg-white">
+    <section id="instrucciones" className="py-20 lg:py-28 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-16">
@@ -352,11 +360,14 @@ function FAQSection() {
 
 // Página principal
 export default function InstalarAppPage() {
+  const searchParams = useSearchParams();
+  const plataforma = searchParams.get("plataforma") as "android" | "ios" | null;
+
   return (
     <main className="min-h-screen">
       <Navbar />
       <HeroSection />
-      <TabsSection />
+      <TabsSection initialPlatform={plataforma || undefined} />
       <VerificationSection />
       <FAQSection />
       <Footer />

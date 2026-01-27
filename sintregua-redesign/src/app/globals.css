@@ -206,6 +206,37 @@
   }
 }
 
+@keyframes pulse-glow-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.4), 0 0 30px rgba(197, 160, 89, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(197, 160, 89, 0.6), 0 0 50px rgba(197, 160, 89, 0.3);
+  }
+}
+
+.animate-pulse-glow-gold {
+  animation: pulse-glow-gold 2s ease-in-out infinite;
+}
+
+/* Botón con borde animado azul */
+@keyframes border-glow-blue {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 77, 152, 0.5), inset 0 0 5px rgba(0, 77, 152, 0.1);
+    border-color: rgba(0, 77, 152, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 77, 152, 0.8), inset 0 0 8px rgba(0, 77, 152, 0.2);
+    border-color: rgba(0, 77, 152, 1);
+  }
+}
+
+.animate-border-glow-blue {
+  border: 2px solid rgba(0, 77, 152, 0.6);
+  animation: border-glow-blue 1.5s ease-in-out infinite;
+}
+
 /* Custom scrollbar for supported browsers */
 @supports (scrollbar-width: thin) {
   html {
