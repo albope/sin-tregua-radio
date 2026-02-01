@@ -114,6 +114,10 @@ export default function RootLayout({
         {/* Format detection */}
         <meta name="format-detection" content="telephone=no" />
 
+        {/* Resource hints para stream de audio - conexión anticipada */}
+        <link rel="dns-prefetch" href="https://stream.zeno.fm" />
+        <link rel="preconnect" href="https://stream.zeno.fm" crossOrigin="anonymous" />
+
         {/* Favicons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />

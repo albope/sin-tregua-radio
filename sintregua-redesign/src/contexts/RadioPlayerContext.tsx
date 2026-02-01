@@ -3,11 +3,14 @@
 import { createContext, useContext, useState, useRef, useEffect, ReactNode } from "react";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
+export type LoadingState = 'idle' | 'connecting' | 'buffering' | 'ready' | 'error';
+
 interface RadioPlayerContextType {
   isPlaying: boolean;
   volume: number;
   audioDelay: number;
   isLoading: boolean;
+  loadingState: LoadingState;
   togglePlay: () => Promise<void>;
   setVolume: (volume: number) => void;
   setAudioDelay: (delay: number) => void;
@@ -36,6 +39,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [volume, setVolumeState] = useState(0.8);
   const [audioDelay, setAudioDelayState] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState<LoadingState>('idle');
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -59,36 +63,50 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Inicializar Web Audio API (solo una vez al montar)
+  // Inicializar Web Audio API de forma diferida pero anticipada
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!audioRef.current || audioContextRef.current) return;
 
-    try {
-      // Crear AudioContext
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-      audioContextRef.current = new AudioContext();
+    const initializeAudio = () => {
+      if (!audioRef.current || audioContextRef.current) return;
 
-      // Crear nodos
-      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
-      delayNodeRef.current = audioContextRef.current.createDelay(10); // Máximo 10 segundos
-      gainNodeRef.current = audioContextRef.current.createGain();
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 64; // 32 barras de frecuencia
-      analyserRef.current.smoothingTimeConstant = 0.8;
+      try {
+        // Crear AudioContext
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        audioContextRef.current = new AudioContextClass();
 
-      // Conectar: source -> delay -> analyser -> gain -> destination
-      sourceNodeRef.current.connect(delayNodeRef.current);
-      delayNodeRef.current.connect(analyserRef.current);
-      analyserRef.current.connect(gainNodeRef.current);
-      gainNodeRef.current.connect(audioContextRef.current.destination);
+        // Crear nodos
+        sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+        delayNodeRef.current = audioContextRef.current.createDelay(10); // Máximo 10 segundos
+        gainNodeRef.current = audioContextRef.current.createGain();
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 64; // 32 barras de frecuencia
+        analyserRef.current.smoothingTimeConstant = 0.8;
 
-      // Configurar valores iniciales (los efectos de sincronización se encargan de actualizarlos)
-      gainNodeRef.current.gain.value = volume;
-      delayNodeRef.current.delayTime.value = audioDelay;
-    } catch (error) {
-      console.error("Error inicializando Web Audio API:", error);
-      // Fallback: usar audio element directamente
+        // Conectar: source -> delay -> analyser -> gain -> destination
+        sourceNodeRef.current.connect(delayNodeRef.current);
+        delayNodeRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(gainNodeRef.current);
+        gainNodeRef.current.connect(audioContextRef.current.destination);
+
+        // Configurar valores iniciales
+        gainNodeRef.current.gain.value = volume;
+        delayNodeRef.current.delayTime.value = audioDelay;
+      } catch (error) {
+        console.error("Error inicializando Web Audio API:", error);
+        // Fallback: usar audio element directamente
+      }
+    };
+
+    // Usar requestIdleCallback para no bloquear el render inicial
+    if ('requestIdleCallback' in window) {
+      const idleId = (window as any).requestIdleCallback(initializeAudio, { timeout: 2000 });
+      return () => (window as any).cancelIdleCallback(idleId);
+    } else {
+      // Fallback para Safari y navegadores antiguos
+      const timeoutId = setTimeout(initializeAudio, 100);
+      return () => clearTimeout(timeoutId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,6 +132,41 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("radio-delay", audioDelay.toString());
     }
   }, [audioDelay]);
+
+  // Eventos de audio para feedback granular
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleLoadStart = () => setLoadingState('connecting');
+    const handleCanPlay = () => setLoadingState('ready');
+    const handlePlaying = () => {
+      setLoadingState('ready');
+      setIsLoading(false);
+    };
+    const handleWaiting = () => setLoadingState('buffering');
+    const handlePause = () => setLoadingState('idle');
+    const handleError = () => {
+      setLoadingState('error');
+      setIsLoading(false);
+    };
+
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('playing', handlePlaying);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('error', handleError);
+
+    return () => {
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('playing', handlePlaying);
+      audio.removeEventListener('waiting', handleWaiting);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('error', handleError);
+    };
+  }, []);
 
   const togglePlay = async () => {
     if (!audioRef.current) return;
@@ -155,6 +208,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         volume,
         audioDelay,
         isLoading,
+        loadingState,
         togglePlay,
         setVolume,
         setAudioDelay,

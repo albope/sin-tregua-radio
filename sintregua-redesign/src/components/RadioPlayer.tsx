@@ -241,7 +241,7 @@ export default function RadioPlayer() {
       <audio
         ref={audioRef}
         src={RADIO_STREAM_URL}
-        preload="none"
+        preload="metadata"
         crossOrigin="anonymous"
       />
     </>

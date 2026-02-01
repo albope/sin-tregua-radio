@@ -15,7 +15,7 @@ export default function AudioVisualizer({
   const { isPlaying, analyserRef } = useRadioPlayer();
   const barsRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
-  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
 
   useEffect(() => {
     if (!isPlaying || !analyserRef.current || !barsRef.current) {
