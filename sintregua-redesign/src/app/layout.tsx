@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Barlow, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { RadioPlayerProvider } from "@/contexts/RadioPlayerContext";
 import RadioPlayer from "@/components/RadioPlayer";

@@ -89,18 +89,36 @@ export default function QuienesSomosPage() {
               <h2 className="font-display font-bold text-2xl text-neutral-dark">Nuestro Equipo</h2>
             </div>
 
-            <div className="pl-16 space-y-8">
+            <div className="pl-0 lg:pl-16 space-y-6">
               {TEAM_MEMBERS.map((member, index) => (
-                <div key={index} className="border-l-4 border-levante-azul pl-6 py-2">
-                  <h3 className="font-display font-bold text-lg text-neutral-dark">
-                    {member.name.split(" ").slice(0, 2).join(" ")}
-                    {member.nickname && <span className="text-levante-granate"> &quot;{member.nickname}&quot;</span>}
-                    {" "}{member.name.split(" ").slice(2).join(" ")}
-                    <span className="font-normal text-neutral-muted text-base ml-2">({member.birthInfo})</span>
-                  </h3>
-                  <p className="text-lg text-neutral-muted leading-relaxed mt-2 text-justify">
-                    {member.description}
-                  </p>
+                <div
+                  key={index}
+                  className="flex flex-col sm:flex-row gap-6 bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-shadow duration-300 border-l-4 border-levante-azul"
+                >
+                  {/* Foto del miembro */}
+                  <div className="flex-shrink-0 flex justify-center sm:justify-start">
+                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden shadow-lg ring-2 ring-levante-azul/20">
+                      <Image
+                        src={member.photo}
+                        alt={member.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Información del miembro */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display font-bold text-lg text-neutral-dark">
+                      {member.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-2 mt-1 mb-3">
+                      <span className="text-sm text-neutral-muted">({member.birthInfo})</span>
+                    </div>
+                    <p className="text-base text-neutral-muted leading-relaxed text-justify">
+                      {member.description}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
