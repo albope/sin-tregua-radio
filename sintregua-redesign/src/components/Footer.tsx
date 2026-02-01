@@ -49,7 +49,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-neutral-dark relative overflow-hidden">
+    <footer className="bg-neutral-dark relative overflow-hidden pb-24 sm:pb-20">
       {/* Textura sutil */}
       <div className="absolute inset-0 bg-granota-pattern opacity-5" />
 
