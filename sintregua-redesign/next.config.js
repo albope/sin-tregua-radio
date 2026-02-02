@@ -70,21 +70,10 @@ const withPWA = require('next-pwa')({
       },
     },
 
-    // API de Patreon
+    // API de Patreon - Sin caché para datos siempre frescos
     {
       urlPattern: /\/api\/patreon-stats/i,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'api-patreon',
-        networkTimeoutSeconds: 10,
-        expiration: {
-          maxEntries: 5,
-          maxAgeSeconds: 10 * 60, // 10 minutos
-        },
-        cacheableResponse: {
-          statuses: [0, 200],
-        },
-      },
+      handler: 'NetworkOnly',
     },
 
     // CRÍTICO: Excluir stream de audio del cache
