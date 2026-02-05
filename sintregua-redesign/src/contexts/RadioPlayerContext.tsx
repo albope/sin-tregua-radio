@@ -34,6 +34,13 @@ export const AUDIO_DELAY_OPTIONS = [
 
 export const RADIO_STREAM_URL = SOCIAL_LINKS.radioStreamDirect;
 
+// Detectar si es dispositivo iOS (iPhone, iPad, iPod)
+const isIOSDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+};
+
 export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolumeState] = useState(0.8);
@@ -51,6 +58,18 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   // Refs para mantener valores actuales accesibles en callbacks (evita closures desactualizados)
   const currentVolumeRef = useRef(volume);
   const currentDelayRef = useRef(audioDelay);
+
+  // Ref para el timeout del delay en iOS (setTimeout antes de play)
+  const delayTimeoutRef = useRef<number | null>(null);
+
+  // Limpiar timeout de delay al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (delayTimeoutRef.current) {
+        clearTimeout(delayTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Mantener refs sincronizados con el estado
   useEffect(() => {
@@ -188,46 +207,97 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const togglePlay = async () => {
     if (!audioRef.current) return;
 
-    // Inicializar AudioContext si no existe
-    // CRÍTICO: Esto se ejecuta dentro del handler de click (interacción directa del usuario)
-    // iOS Safari requiere que AudioContext se cree en respuesta a interacción del usuario
-    if (!audioContextRef.current) {
-      initializeAudioContext();
-    }
-
-    // Reanudar AudioContext si está suspendido (requerido por navegadores)
-    if (audioContextRef.current && audioContextRef.current.state === "suspended") {
-      await audioContextRef.current.resume();
-
-      // Re-aplicar valores después de resume para iOS
-      // Esto es necesario porque iOS puede ignorar cambios mientras está suspendido
-      if (delayNodeRef.current) {
-        delayNodeRef.current.delayTime.setValueAtTime(
-          currentDelayRef.current,
-          audioContextRef.current.currentTime
-        );
-      }
-      if (gainNodeRef.current) {
-        gainNodeRef.current.gain.setValueAtTime(
-          currentVolumeRef.current,
-          audioContextRef.current.currentTime
-        );
-      }
-    }
+    const isIOS = isIOSDevice();
 
     if (isPlaying) {
+      // PAUSAR
       audioRef.current.pause();
+      // Limpiar timeout de delay si existe (iOS)
+      if (delayTimeoutRef.current) {
+        clearTimeout(delayTimeoutRef.current);
+        delayTimeoutRef.current = null;
+      }
       setIsPlaying(false);
+      setIsLoading(false);
     } else {
+      // REPRODUCIR
       setIsLoading(true);
-      try {
-        await audioRef.current.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Error reproduciendo audio:", error);
-        // No mostramos alert para mejor UX
-      } finally {
-        setIsLoading(false);
+
+      if (isIOS) {
+        // ============================================
+        // iOS: Delay manual con setTimeout
+        // El DelayNode de Web Audio API NO funciona en iOS Safari con streams
+        // (Bug WebKit #221334 - sin resolver desde 2021)
+        // ============================================
+        const delayMs = currentDelayRef.current * 1000;
+
+        if (delayMs > 0) {
+          // Mostrar estado de carga con el delay
+          setLoadingState('buffering');
+
+          delayTimeoutRef.current = window.setTimeout(async () => {
+            try {
+              await audioRef.current?.play();
+              setIsPlaying(true);
+              setLoadingState('ready');
+            } catch (error) {
+              console.error("Error reproduciendo audio:", error);
+              setLoadingState('error');
+            } finally {
+              setIsLoading(false);
+              delayTimeoutRef.current = null;
+            }
+          }, delayMs);
+        } else {
+          // Sin delay - reproducir inmediatamente
+          try {
+            await audioRef.current.play();
+            setIsPlaying(true);
+            setLoadingState('ready');
+          } catch (error) {
+            console.error("Error reproduciendo audio:", error);
+            setLoadingState('error');
+          } finally {
+            setIsLoading(false);
+          }
+        }
+      } else {
+        // ============================================
+        // Android/Desktop: Web Audio API completo con DelayNode
+        // ============================================
+
+        // Inicializar AudioContext si no existe
+        if (!audioContextRef.current) {
+          initializeAudioContext();
+        }
+
+        // Reanudar AudioContext si está suspendido
+        if (audioContextRef.current && audioContextRef.current.state === "suspended") {
+          await audioContextRef.current.resume();
+
+          // Re-aplicar valores después de resume
+          if (delayNodeRef.current) {
+            delayNodeRef.current.delayTime.setValueAtTime(
+              currentDelayRef.current,
+              audioContextRef.current.currentTime
+            );
+          }
+          if (gainNodeRef.current) {
+            gainNodeRef.current.gain.setValueAtTime(
+              currentVolumeRef.current,
+              audioContextRef.current.currentTime
+            );
+          }
+        }
+
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch (error) {
+          console.error("Error reproduciendo audio:", error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
   };
@@ -237,7 +307,62 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const setAudioDelay = (delay: number) => {
-    setAudioDelayState(Math.max(0, Math.min(10, delay)));
+    const newDelay = Math.max(0, Math.min(10, delay));
+    setAudioDelayState(newDelay);
+
+    const isIOS = isIOSDevice();
+
+    // Si está reproduciendo en iOS y cambia el delay:
+    // AUTO-REINICIAR con el nuevo delay (el usuario no hace nada manual)
+    if (isIOS && isPlaying && audioRef.current) {
+      // 1. Pausar audio actual
+      audioRef.current.pause();
+
+      // 2. Limpiar timeout anterior si existe
+      if (delayTimeoutRef.current) {
+        clearTimeout(delayTimeoutRef.current);
+        delayTimeoutRef.current = null;
+      }
+
+      // 3. Mostrar estado "Aplicando retardo..."
+      setLoadingState('buffering');
+      setIsLoading(true);
+
+      // 4. Esperar el nuevo delay y reproducir automáticamente
+      const delayMs = newDelay * 1000;
+
+      if (delayMs > 0) {
+        delayTimeoutRef.current = window.setTimeout(async () => {
+          try {
+            await audioRef.current?.play();
+            setIsPlaying(true);
+            setLoadingState('ready');
+          } catch (error) {
+            console.error("Error reproduciendo audio:", error);
+            setLoadingState('error');
+            setIsPlaying(false);
+          } finally {
+            setIsLoading(false);
+            delayTimeoutRef.current = null;
+          }
+        }, delayMs);
+      } else {
+        // Sin delay - reproducir inmediatamente
+        (async () => {
+          try {
+            await audioRef.current?.play();
+            setIsPlaying(true);
+            setLoadingState('ready');
+          } catch (error) {
+            console.error("Error reproduciendo audio:", error);
+            setLoadingState('error');
+            setIsPlaying(false);
+          } finally {
+            setIsLoading(false);
+          }
+        })();
+      }
+    }
   };
 
   return (
