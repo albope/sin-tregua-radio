@@ -20,6 +20,30 @@ interface CacheEntry {
 let cache: CacheEntry | null = null;
 
 /**
+ * Verifica si hay un override manual en variables de entorno
+ * Variables: PATREON_OVERRIDE_TOTAL y PATREON_OVERRIDE_PAID
+ */
+function getEnvOverride(): PatreonStats | null {
+  const totalStr = process.env.PATREON_OVERRIDE_TOTAL;
+  const paidStr = process.env.PATREON_OVERRIDE_PAID;
+
+  if (!totalStr || !paidStr) return null;
+
+  const total = parseInt(totalStr, 10);
+  const paid = parseInt(paidStr, 10);
+
+  if (isNaN(total) || isNaN(paid)) return null;
+
+  console.log("[Patreon] Usando override de variables de entorno:", { total, paid });
+
+  return {
+    totalMembers: total,
+    paidMembers: paid,
+    lastUpdated: new Date().toISOString(),
+  };
+}
+
+/**
  * Obtiene las estadísticas de Patreon desde la caché o haciendo fetch
  */
 async function getPatreonStats(forceRefresh = false): Promise<PatreonStats | null> {
@@ -123,6 +147,28 @@ export async function GET(request: Request) {
     const forceRefresh = searchParams.get("force") === "true";
     const debug = searchParams.get("debug") === "true";
 
+    // Primero verificar si hay un override en variables de entorno
+    const envOverride = getEnvOverride();
+    if (envOverride) {
+      const response: PatreonApiResponse & { manual?: boolean; debug?: object } = {
+        success: true,
+        data: envOverride,
+        cached: false,
+        manual: true,
+      };
+
+      if (debug) {
+        response.debug = {
+          source: "environment_variables",
+          PATREON_OVERRIDE_TOTAL: process.env.PATREON_OVERRIDE_TOTAL,
+          PATREON_OVERRIDE_PAID: process.env.PATREON_OVERRIDE_PAID,
+        };
+      }
+
+      return NextResponse.json(response);
+    }
+
+    // Si no hay override, usar scraping normal
     const stats = await getPatreonStats(forceRefresh);
 
     if (stats) {
@@ -135,6 +181,7 @@ export async function GET(request: Request) {
       // Añadir info de debug si se solicita
       if (debug && cache) {
         response.debug = {
+          source: "scraping",
           cacheTimestamp: new Date(cache.timestamp).toISOString(),
           cacheExpiresAt: new Date(cache.expiresAt).toISOString(),
           serverTime: new Date().toISOString(),
