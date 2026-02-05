@@ -318,6 +318,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   const setAudioDelay = (delay: number) => {
     const newDelay = Math.max(0, Math.min(10, delay));
+    const previousDelay = audioDelay; // Guardar valor anterior antes de actualizar
     setAudioDelayState(newDelay);
 
     const isIOS = isIOSDevice();
@@ -325,20 +326,25 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     // Si está reproduciendo en iOS y cambia el delay:
     // AUTO-REINICIAR con el nuevo delay (el usuario no hace nada manual)
     if (isIOS && isPlaying && audioRef.current) {
-      // 1. Pausar audio actual
-      audioRef.current.pause();
-
-      // 2. Limpiar timeout anterior si existe
+      // 1. Limpiar timeout anterior si existe
       if (delayTimeoutRef.current) {
         clearTimeout(delayTimeoutRef.current);
         delayTimeoutRef.current = null;
       }
 
-      // 3. Mostrar estado "Aplicando retardo..."
-      setLoadingState('buffering');
+      // 2. Si BAJAMOS el retardo, reconectar al stream para ir al directo
+      if (newDelay < previousDelay) {
+        audioRef.current.pause();
+        audioRef.current.src = RADIO_STREAM_URL; // Reconectar al directo
+        setLoadingState('reconnecting');
+      } else {
+        // Si SUBIMOS el retardo, solo pausar (mantener buffer)
+        audioRef.current.pause();
+        setLoadingState('buffering');
+      }
       setIsLoading(true);
 
-      // 4. Esperar el nuevo delay y reproducir automáticamente
+      // 3. Esperar el nuevo delay y reproducir automáticamente
       const delayMs = newDelay * 1000;
 
       if (delayMs > 0) {
