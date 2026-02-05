@@ -161,7 +161,7 @@ export default function RadioPlayer() {
                     className="fixed inset-0 z-40"
                     onClick={() => setShowDelayMenu(false)}
                   />
-                  <div className="absolute bottom-full mb-2 right-0 bg-neutral-dark border border-white/20 rounded-lg shadow-xl overflow-hidden min-w-[200px] z-50 relative">
+                  <div className="absolute bottom-full mb-2 left-0 sm:right-0 sm:left-auto bg-neutral-dark border border-white/20 rounded-lg shadow-xl overflow-hidden min-w-[200px] z-50 relative">
                     <div className="p-2 border-b border-white/10">
                       <p className="text-white text-xs font-semibold">Retardo de audio</p>
                       <p className="text-white/60 text-xs">Para sincronizar con TV</p>
@@ -273,12 +273,12 @@ export default function RadioPlayer() {
               </>
             )}
 
-            {/* Link a Zeno.fm */}
+            {/* Link a Zeno.fm - oculto en móvil cuando el menú de retardo está abierto */}
             <a
               href={SOCIAL_LINKS.radioStream}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative group"
+              className={`relative group ${showDelayMenu ? 'hidden sm:block' : ''}`}
               title="Abrir en Zeno.fm"
               aria-label="Abrir radio en Zeno.fm"
             >

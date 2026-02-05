@@ -211,6 +211,13 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
     if (isPlaying) {
       // PAUSAR
+
+      // Android/Desktop: Silenciar GainNode inmediatamente para cortar audio del DelayNode
+      // (El DelayNode tiene buffer interno que seguiría reproduciéndose)
+      if (gainNodeRef.current && audioContextRef.current && audioContextRef.current.state === 'running') {
+        gainNodeRef.current.gain.setValueAtTime(0, audioContextRef.current.currentTime);
+      }
+
       audioRef.current.pause();
       audioRef.current.src = ""; // Limpiar src para forzar reconexión al reanudar
       // Limpiar timeout de delay si existe (iOS)
@@ -284,20 +291,14 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         // Reanudar AudioContext si está suspendido
         if (audioContextRef.current && audioContextRef.current.state === "suspended") {
           await audioContextRef.current.resume();
+        }
 
-          // Re-aplicar valores después de resume
-          if (delayNodeRef.current) {
-            delayNodeRef.current.delayTime.setValueAtTime(
-              currentDelayRef.current,
-              audioContextRef.current.currentTime
-            );
-          }
-          if (gainNodeRef.current) {
-            gainNodeRef.current.gain.setValueAtTime(
-              currentVolumeRef.current,
-              audioContextRef.current.currentTime
-            );
-          }
+        // Restaurar volumen (puede estar en 0 si se pausó con delay activo)
+        if (gainNodeRef.current && audioContextRef.current && audioContextRef.current.state === "running") {
+          gainNodeRef.current.gain.setValueAtTime(
+            currentVolumeRef.current,
+            audioContextRef.current.currentTime
+          );
         }
 
         try {
