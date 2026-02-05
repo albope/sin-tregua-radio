@@ -18,12 +18,30 @@ export default function RadioSection() {
 
   const [showDelayMenu, setShowDelayMenu] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   // Detectar iOS al montar
   useEffect(() => {
     setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.userAgent.includes('Mac') && 'ontouchend' in document));
   }, []);
+
+  // Cuenta regresiva cuando se aplica delay en iOS
+  useEffect(() => {
+    if (isLoading && isIOS && audioDelay > 0) {
+      setCountdown(audioDelay);
+      const interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 0.5) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 0.5;
+        });
+      }, 500);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, isIOS, audioDelay]);
 
   // Cerrar el panel cuando se hace scroll
   useEffect(() => {
@@ -407,7 +425,7 @@ export default function RadioSection() {
                         <div className="text-center">
                           <div className="animate-spin w-8 h-8 border-3 border-white/30 border-t-levante-dorado rounded-full mx-auto mb-3" />
                           <p className="text-white text-sm font-semibold">Aplicando retardo...</p>
-                          <p className="text-levante-dorado text-lg font-bold">{audioDelay}s</p>
+                          <p className="text-levante-dorado text-lg font-bold">{countdown > 0 ? countdown.toFixed(1) : '0'}s</p>
                         </div>
                       </div>
                     )}
