@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useRef, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useRef, useEffect, useCallback, ReactNode } from "react";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 export type LoadingState = 'idle' | 'connecting' | 'buffering' | 'ready' | 'error';
@@ -48,6 +48,19 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const gainNodeRef = useRef<GainNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
+  // Refs para mantener valores actuales accesibles en callbacks (evita closures desactualizados)
+  const currentVolumeRef = useRef(volume);
+  const currentDelayRef = useRef(audioDelay);
+
+  // Mantener refs sincronizados con el estado
+  useEffect(() => {
+    currentVolumeRef.current = volume;
+  }, [volume]);
+
+  useEffect(() => {
+    currentDelayRef.current = audioDelay;
+  }, [audioDelay]);
+
   // Cargar preferencias del localStorage al montar
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -63,59 +76,56 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Inicializar Web Audio API de forma diferida pero anticipada
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  // Función para inicializar AudioContext - DEBE llamarse desde interacción de usuario para iOS
+  const initializeAudioContext = useCallback(() => {
     if (!audioRef.current || audioContextRef.current) return;
 
-    const initializeAudio = () => {
-      if (!audioRef.current || audioContextRef.current) return;
+    try {
+      // Crear AudioContext (webkitAudioContext para Safari/iOS)
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      audioContextRef.current = new AudioContextClass();
 
-      try {
-        // Crear AudioContext
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        audioContextRef.current = new AudioContextClass();
+      // Crear nodos
+      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      delayNodeRef.current = audioContextRef.current.createDelay(10); // Máximo 10 segundos
+      gainNodeRef.current = audioContextRef.current.createGain();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 64; // 32 barras de frecuencia
+      analyserRef.current.smoothingTimeConstant = 0.8;
 
-        // Crear nodos
-        sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
-        delayNodeRef.current = audioContextRef.current.createDelay(10); // Máximo 10 segundos
-        gainNodeRef.current = audioContextRef.current.createGain();
-        analyserRef.current = audioContextRef.current.createAnalyser();
-        analyserRef.current.fftSize = 64; // 32 barras de frecuencia
-        analyserRef.current.smoothingTimeConstant = 0.8;
+      // Conectar: source -> delay -> analyser -> gain -> destination
+      sourceNodeRef.current.connect(delayNodeRef.current);
+      delayNodeRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(gainNodeRef.current);
+      gainNodeRef.current.connect(audioContextRef.current.destination);
 
-        // Conectar: source -> delay -> analyser -> gain -> destination
-        sourceNodeRef.current.connect(delayNodeRef.current);
-        delayNodeRef.current.connect(analyserRef.current);
-        analyserRef.current.connect(gainNodeRef.current);
-        gainNodeRef.current.connect(audioContextRef.current.destination);
-
-        // Configurar valores iniciales
-        gainNodeRef.current.gain.value = volume;
-        delayNodeRef.current.delayTime.value = audioDelay;
-      } catch (error) {
-        console.error("Error inicializando Web Audio API:", error);
-        // Fallback: usar audio element directamente
-      }
-    };
-
-    // Usar requestIdleCallback para no bloquear el render inicial
-    if ('requestIdleCallback' in window) {
-      const idleId = (window as any).requestIdleCallback(initializeAudio, { timeout: 2000 });
-      return () => (window as any).cancelIdleCallback(idleId);
-    } else {
-      // Fallback para Safari y navegadores antiguos
-      const timeoutId = setTimeout(initializeAudio, 100);
-      return () => clearTimeout(timeoutId);
+      // Aplicar valores guardados usando setValueAtTime para mejor compatibilidad con iOS
+      gainNodeRef.current.gain.setValueAtTime(
+        currentVolumeRef.current,
+        audioContextRef.current.currentTime
+      );
+      delayNodeRef.current.delayTime.setValueAtTime(
+        currentDelayRef.current,
+        audioContextRef.current.currentTime
+      );
+    } catch (error) {
+      console.error("Error inicializando Web Audio API:", error);
+      // Fallback: el audio element funcionará sin Web Audio API
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sincronizar volumen
   useEffect(() => {
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = volume;
+    if (gainNodeRef.current && audioContextRef.current) {
+      // Solo modificar si el AudioContext está corriendo (iOS requiere esto)
+      if (audioContextRef.current.state === 'running') {
+        gainNodeRef.current.gain.setValueAtTime(
+          volume,
+          audioContextRef.current.currentTime
+        );
+      }
     } else if (audioRef.current) {
+      // Fallback si no hay Web Audio API
       audioRef.current.volume = volume;
     }
     if (typeof window !== "undefined") {
@@ -125,8 +135,15 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
 
   // Sincronizar delay
   useEffect(() => {
-    if (delayNodeRef.current) {
-      delayNodeRef.current.delayTime.value = audioDelay;
+    if (delayNodeRef.current && audioContextRef.current) {
+      // Solo modificar si el AudioContext está corriendo (iOS requiere esto)
+      if (audioContextRef.current.state === 'running') {
+        delayNodeRef.current.delayTime.setValueAtTime(
+          audioDelay,
+          audioContextRef.current.currentTime
+        );
+      }
+      // Si está suspendido, el valor se aplicará en el próximo resume()
     }
     if (typeof window !== "undefined") {
       localStorage.setItem("radio-delay", audioDelay.toString());
@@ -171,9 +188,31 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
   const togglePlay = async () => {
     if (!audioRef.current) return;
 
+    // Inicializar AudioContext si no existe
+    // CRÍTICO: Esto se ejecuta dentro del handler de click (interacción directa del usuario)
+    // iOS Safari requiere que AudioContext se cree en respuesta a interacción del usuario
+    if (!audioContextRef.current) {
+      initializeAudioContext();
+    }
+
     // Reanudar AudioContext si está suspendido (requerido por navegadores)
     if (audioContextRef.current && audioContextRef.current.state === "suspended") {
       await audioContextRef.current.resume();
+
+      // Re-aplicar valores después de resume para iOS
+      // Esto es necesario porque iOS puede ignorar cambios mientras está suspendido
+      if (delayNodeRef.current) {
+        delayNodeRef.current.delayTime.setValueAtTime(
+          currentDelayRef.current,
+          audioContextRef.current.currentTime
+        );
+      }
+      if (gainNodeRef.current) {
+        gainNodeRef.current.gain.setValueAtTime(
+          currentVolumeRef.current,
+          audioContextRef.current.currentTime
+        );
+      }
     }
 
     if (isPlaying) {
