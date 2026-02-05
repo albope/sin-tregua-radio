@@ -289,14 +289,20 @@ export default function RadioSection() {
                                 style={{ left: `${position}%`, transform: 'translateX(-50%)' }}
                                 title={option.label}
                               >
-                                {/* Marcador */}
-                                <div className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                                  isSelected
-                                    ? 'bg-levante-dorado scale-150 shadow-lg shadow-levante-dorado/50'
-                                    : isPassed
-                                      ? 'bg-levante-dorado/60 hover:bg-levante-dorado hover:scale-125'
-                                      : 'bg-white/30 hover:bg-white/50 hover:scale-125'
-                                }`} />
+                                {/* Marcador con efecto de ring en iOS para indicar que es clicable */}
+                                <div className="relative">
+                                  {/* Ring animado solo en iOS para puntos no seleccionados */}
+                                  {isIOS && !isSelected && (
+                                    <div className="absolute inset-0 w-3 h-3 rounded-full bg-white/20 animate-ping" style={{ animationDuration: '2s' }} />
+                                  )}
+                                  <div className={`relative w-3 h-3 rounded-full transition-all duration-200 ${
+                                    isSelected
+                                      ? 'bg-levante-dorado scale-150 shadow-lg shadow-levante-dorado/50'
+                                      : isPassed
+                                        ? 'bg-levante-dorado/60 hover:bg-levante-dorado hover:scale-125'
+                                        : 'bg-white/30 hover:bg-white/50 hover:scale-125'
+                                  }`} />
+                                </div>
 
                                 {/* Tooltip en hover */}
                                 <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -361,13 +367,13 @@ export default function RadioSection() {
                     {/* Footer con tip */}
                     <div className="px-4 py-3 bg-black/20 border-t border-white/10">
                       {isIOS ? (
-                        <div className="text-center space-y-1">
-                          <p className="text-white/50 text-[10px] flex items-center justify-center gap-1">
-                            <span>📱</span>
-                            Sincroniza la radio con tu TV
+                        <div className="text-center">
+                          <p className="text-white/50 text-[10px] flex items-center justify-center gap-1.5">
+                            <span className="inline-block w-2 h-2 rounded-full bg-levante-dorado/60 animate-pulse" />
+                            Pulsa sobre un punto o usa +/- para ajustar
                           </p>
                           {audioDelay > 0 && (
-                            <p className="text-yellow-400/70 text-[10px]">
+                            <p className="text-yellow-400/70 text-[10px] mt-1">
                               El audio comenzará tras {audioDelay}s de retardo
                             </p>
                           )}
