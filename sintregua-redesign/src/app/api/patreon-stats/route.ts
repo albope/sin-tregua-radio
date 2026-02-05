@@ -38,14 +38,14 @@ async function getPatreonStats(forceRefresh = false): Promise<PatreonStats | nul
 
     const response = await fetch(PATREON_URL, {
       signal: controller.signal,
+      cache: "no-store",
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Cache-Control": "no-cache",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
         "Pragma": "no-cache",
-        "Sec-Ch-Ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+        "Sec-Ch-Ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
         "Sec-Ch-Ua-Mobile": "?0",
         "Sec-Ch-Ua-Platform": '"Windows"',
         "Sec-Fetch-Dest": "document",
@@ -69,6 +69,12 @@ async function getPatreonStats(forceRefresh = false): Promise<PatreonStats | nul
     }
 
     const html = await response.text();
+
+    // Log para debug: buscar los valores en el HTML recibido
+    const patronCountMatch = html.match(/"patron_count"\s*:\s*(\d+)/);
+    const paidMemberMatch = html.match(/"paid_member_count"\s*:\s*(\d+)/);
+    console.log("[Patreon] Valores encontrados en HTML - patron_count:", patronCountMatch?.[1], "paid_member_count:", paidMemberMatch?.[1]);
+
     const stats = extractPatreonStats(html);
 
     if (stats) {
@@ -112,18 +118,29 @@ async function getPatreonStats(forceRefresh = false): Promise<PatreonStats | nul
  */
 export async function GET(request: Request) {
   try {
-    // Verificar si se solicita forzar refresh
+    // Verificar parámetros
     const { searchParams } = new URL(request.url);
     const forceRefresh = searchParams.get("force") === "true";
+    const debug = searchParams.get("debug") === "true";
 
     const stats = await getPatreonStats(forceRefresh);
 
     if (stats) {
-      const response: PatreonApiResponse = {
+      const response: PatreonApiResponse & { debug?: object } = {
         success: true,
         data: stats,
-        cached: cache !== null && Date.now() < cache.expiresAt,
+        cached: cache !== null && Date.now() < cache.expiresAt && !forceRefresh,
       };
+
+      // Añadir info de debug si se solicita
+      if (debug && cache) {
+        response.debug = {
+          cacheTimestamp: new Date(cache.timestamp).toISOString(),
+          cacheExpiresAt: new Date(cache.expiresAt).toISOString(),
+          serverTime: new Date().toISOString(),
+          forceRefreshUsed: forceRefresh,
+        };
+      }
 
       return NextResponse.json(response);
     } else {
