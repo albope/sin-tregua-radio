@@ -10,6 +10,7 @@ export default function RadioPlayer() {
     volume,
     audioDelay,
     isLoading,
+    loadingState,
     togglePlay,
     setVolume,
     setAudioDelay,
@@ -90,9 +91,15 @@ export default function RadioPlayer() {
             {/* Info */}
             <div className="flex-1 min-w-0 hidden sm:block">
               <p className="text-white font-display font-bold text-sm truncate">Sin Tregua Radio</p>
-              <p className="text-white/70 text-xs truncate">
-                {isPlaying ? "Emisión en directo" : "Haz clic para escuchar"}
-              </p>
+              {isLoading && loadingState === 'reconnecting' ? (
+                <p className="text-levante-dorado text-xs truncate animate-pulse">
+                  Volviendo al directo...
+                </p>
+              ) : (
+                <p className="text-white/70 text-xs truncate">
+                  {isPlaying ? "Emisión en directo" : "Haz clic para escuchar"}
+                </p>
+              )}
             </div>
 
             {/* Control de Retardo */}

@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useRef, useEffect, useCallback, ReactNode } from "react";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
-export type LoadingState = 'idle' | 'connecting' | 'buffering' | 'ready' | 'error';
+export type LoadingState = 'idle' | 'connecting' | 'buffering' | 'ready' | 'error' | 'reconnecting';
 
 interface RadioPlayerContextType {
   isPlaying: boolean;
@@ -212,6 +212,7 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
     if (isPlaying) {
       // PAUSAR
       audioRef.current.pause();
+      audioRef.current.src = ""; // Limpiar src para forzar reconexión al reanudar
       // Limpiar timeout de delay si existe (iOS)
       if (delayTimeoutRef.current) {
         clearTimeout(delayTimeoutRef.current);
@@ -229,6 +230,11 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         // El DelayNode de Web Audio API NO funciona en iOS Safari con streams
         // (Bug WebKit #221334 - sin resolver desde 2021)
         // ============================================
+
+        // Reconectar al stream en vivo (fuerza obtener audio actual)
+        audioRef.current.src = RADIO_STREAM_URL;
+        setLoadingState('reconnecting');
+
         const delayMs = currentDelayRef.current * 1000;
 
         if (delayMs > 0) {
@@ -265,6 +271,10 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
         // ============================================
         // Android/Desktop: Web Audio API completo con DelayNode
         // ============================================
+
+        // Reconectar al stream en vivo (fuerza obtener audio actual)
+        audioRef.current.src = RADIO_STREAM_URL;
+        setLoadingState('reconnecting');
 
         // Inicializar AudioContext si no existe
         if (!audioContextRef.current) {
