@@ -89,8 +89,9 @@ export const IMAGES = {
   favicon32: `${UPLOADS_URL}/2025/09/cropped-ico-ST-radioRecurso-4-32x32.png`,
   favicon192: `${UPLOADS_URL}/2025/09/cropped-ico-ST-radioRecurso-4-192x192.png`,
   favicon180: `${UPLOADS_URL}/2025/09/cropped-ico-ST-radioRecurso-4-180x180.png`,
-  heroMain: `${UPLOADS_URL}/2025/11/AYATS-FINAL-22-scaled.jpg`,
-  heroAlt: `${UPLOADS_URL}/2025/11/AYATS-FINAL-5-copia-3-scaled.jpg`,
+  // Imágenes hero servidas localmente para evitar bloqueo anti-hotlinking
+  heroMain: `/images/team/AYATS-FINAL-3-copia-1-768x512.jpg`,
+  heroAlt: `/images/team/AYATS-FINAL-5-copia-2-768x512.jpg`,
 };
 
 // Fotos del equipo para el carrusel del hero (servidas localmente)
