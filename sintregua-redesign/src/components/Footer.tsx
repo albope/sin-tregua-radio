@@ -196,7 +196,16 @@ export default function Footer() {
             © {new Date().getFullYear()} {COMPANY_INFO.name}. Todos los derechos reservados.
           </p>
           <p className="text-white/30 text-xs flex items-center gap-1">
-            Hecho con <span className="text-levante-azul">💙</span><span className="text-levante-granate">❤️</span> por granotas para granotas
+            Hecho con <span className="text-levante-azul">💙</span><span className="text-levante-granate">❤️</span> por{' '}
+            <a
+              href="https://bpmtechstudio.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-white/20 underline-offset-2 hover:text-levante-dorado hover:decoration-levante-dorado transition-colors duration-200"
+            >
+              granotas
+            </a>{' '}
+            para granotas
           </p>
         </div>
       </div>
