@@ -118,6 +118,12 @@ export function RadioPlayerProvider({ children }: { children: ReactNode }) {
       analyserRef.current.connect(gainNodeRef.current);
       gainNodeRef.current.connect(audioContextRef.current.destination);
 
+      // A partir de aquí el volumen lo controla SOLO el GainNode. El <audio> llega con
+      // el volumen del fallback (el guardado en localStorage) y el navegador lo sigue
+      // aplicando antes del grafo: sin este reset se atenúa dos veces (30% -> 9%) y
+      // subir el slider ya no lo recupera.
+      audioRef.current.volume = 1;
+
       // Aplicar valores guardados usando setValueAtTime para mejor compatibilidad con iOS
       gainNodeRef.current.gain.setValueAtTime(
         currentVolumeRef.current,
